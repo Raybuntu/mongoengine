@@ -678,6 +678,20 @@ class QuerySetTest(unittest.TestCase):
         obj = self.Person.objects(name__not__iexact='alice').first()
         self.assertEqual(obj, None)
 
+    def test_range(self):
+        """Ensure that the __range operator works as expected.
+        """
+        self.Person.drop_collection()
+        walker = self.Person(name='Walker', age=50)
+        walker.save()
+        hugo = self.Person(name='Hugo', age=20)
+        hugo.save()
+        sheldon = self.Person(name='Sheldon', age=38)
+        sheldon.save()
+
+        obj = self.Person.objects(age__range=(20,40))
+        self.assertEqual(obj.count(), 2)
+
     def test_filter_chaining(self):
         """Ensure filters can be chained together.
         """

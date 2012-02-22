@@ -64,6 +64,7 @@ Available operators are as follows:
 * ``all`` -- every item in list of values provided is in array
 * ``size`` -- the size of the array is
 * ``exists`` -- value for field exists
+* ``range`` -- in a range of two values (a list or tuple of two values should be provided)
 
 The following operators are available as shortcuts to querying with regular
 expressions:

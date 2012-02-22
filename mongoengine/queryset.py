@@ -619,7 +619,7 @@ class QuerySet(object):
         """Transform a query from Django-style format to Mongo format.
         """
         operators = ['ne', 'gt', 'gte', 'lt', 'lte', 'in', 'nin', 'mod',
-                     'all', 'size', 'exists', 'not']
+                     'all', 'size', 'exists', 'not', 'range']
         geo_operators = ['within_distance', 'within_spherical_distance', 'within_box', 'within_polygon', 'near', 'near_sphere']
         match_operators = ['contains', 'icontains', 'startswith',
                            'istartswith', 'endswith', 'iendswith',
@@ -674,9 +674,15 @@ class QuerySet(object):
                             value = field
                     else:
                         value = field.prepare_query_value(op, value)
-                elif op in ('in', 'nin', 'all', 'near'):
+                elif op in ('in', 'nin', 'all', 'near', 'range'):
                     # 'in', 'nin' and 'all' require a list of values
                     value = [field.prepare_query_value(op, v) for v in value]
+                    if op == 'range':
+                        op = False
+                        value.sort()
+                        min_val = value[0]
+                        max_val = value[1]
+                        value = {'$gte': min_val, '$lte': max_val}
 
             # if op and op not in match_operators:
             if op:
